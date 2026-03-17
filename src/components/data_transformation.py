@@ -41,11 +41,7 @@ class DataTransformation:
                     ('categorical', categorical_pipeline, categorical_columns)
                 ]
             )
-            save_object(
-                file_path=self.data_transformation_config.preprocessor_obj_file_path,
-                obj=preprocessor
-            )
-
+            
             return preprocessor
         
         except Exception as e:
@@ -78,6 +74,11 @@ class DataTransformation:
             train_arr = np.c_[input_feature_train_arr, np.array(target_feature_train_df)]
             test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
 
+            save_object(
+                file_path=self.data_transformation_config.preprocessor_obj_file_path,
+                obj=preprocessor_obj
+            )
+
             logging.info("Saved preprocessing object.")
 
             return (train_arr, test_arr, self.data_transformation_config.preprocessor_obj_file_path)
@@ -85,8 +86,3 @@ class DataTransformation:
             logging.info("Error occurred during data transformation.")
             raise CustomException(e, sys)
         
-if __name__ == "__main__":
-    obj = DataTransformation()
-    train_path = os.path.join("artifacts", "train.csv")
-    test_path = os.path.join("artifacts", "test.csv")
-    obj.initiate_data_transformation(train_path, test_path)

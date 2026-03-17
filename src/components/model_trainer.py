@@ -59,7 +59,62 @@ class ModelTrainer:
                 "CatBoost Regressor": CatBoostRegressor(verbose=False)
             }
 
-            model_report: dict = evaluate_models(X_train, y_train, X_test, y_test, models)
+            params = {
+                "Random Forest": {
+                    'n_estimators': [100, 200],
+                    'max_depth': [None, 10, 20],
+                    'min_samples_split': [2, 5],
+                    'min_samples_leaf': [1, 2]
+                },
+                "Gradient Boosting": {
+                    'n_estimators': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'max_depth': [3, 5]
+                },
+                "AdaBoost Regressor": {
+                    'n_estimators': [50, 100],
+                    'learning_rate': [0.01, 0.1]
+                },
+                "Extra Trees Regressor": {
+                    'n_estimators': [100, 200],
+                    'max_depth': [None, 10, 20],
+                    'min_samples_split': [2, 5],
+                    'min_samples_leaf': [1, 2]
+                },
+                "Hist Gradient Boosting Regressor": {
+                    'learning_rate': [0.01, 0.1],
+                    'max_depth': [3, 5]
+                },
+                "Linear Regression": {},
+                "Ridge Regression": {
+                    'alpha': [0.1, 1.0, 10.0]
+                },
+                "Lasso Regression": {
+                    'alpha': [0.1, 1.0, 10.0]
+                },
+                "Elastic Net": {
+                    'alpha': [0.1, 1.0, 10.0],
+                    'l1_ratio': [0.1, 0.5, 0.9]
+                },
+                "Decision Tree": {
+                    'max_depth': [None, 10, 20],
+                    'min_samples_split': [2, 5],
+                    'min_samples_leaf': [1, 2]
+                },
+                "XGBRegressor": {
+                    'n_estimators': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'max_depth': [3, 5]
+                },
+                "CatBoost Regressor": {
+                    'iterations': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'depth': [3, 5]
+                }
+            }
+
+
+            model_report: dict = evaluate_models(X_train, y_train, X_test, y_test, models, params)
 
             best_model_score = max(sorted(model_report.values()))
 
@@ -82,9 +137,3 @@ class ModelTrainer:
         except Exception as e:
             raise CustomException(e, sys)
         
-if __name__ == "__main__":
-    obj = ModelTrainer()
-    train_array = np.array([[1, 2, 3], [4, 5, 6]])
-    test_array = np.array([[7, 8, 9], [10, 11, 12]])
-    preprocessor_path = "./../artifacts/preprocessor.pkl"
-    obj.initiate_model_trainer(train_array, test_array, preprocessor_path)
